@@ -6,13 +6,3 @@ class WrikeException(Exception):
     """
 
     pass
-
-
-class KindException(ValueError):
-    """Raised for when the returned kind does not meet the expected
-
-    Args:
-        ValueError (varies): categorize as a value error
-    """
-
-    pass
