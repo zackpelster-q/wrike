@@ -79,16 +79,6 @@ class Wrike:
         contact = self._one(result, Contact)
         return contact
 
-    def get_version(self) -> Version:
-        result = self._rest_adapter.get(endpoint="version")
-        version = self._one(result, Version)
-        return version
-
-    def get_comments(self) -> List[Comment]:
-        result = self._rest_adapter.get(endpoint="commments")
-        comment_list = [Comment(**datum) for datum in result.data]
-        return comment_list
-
     def get_tasks(self) -> List[Task]:
         result = self._rest_adapter.get(endpoint="tasks")
         task_list = [Task(**datum) for datum in result.data]
@@ -108,3 +98,13 @@ class Wrike:
 
     def get_tasks_paged(self, max_amt: int = 1000) -> Iterator[Task]:
         return self._page(endpoint="tasks", model=Task, max_amt=max_amt)
+
+    def get_comments(self) -> List[Comment]:
+        result = self._rest_adapter.get(endpoint="commments")
+        comment_list = [Comment(**datum) for datum in result.data]
+        return comment_list
+
+    def get_version(self) -> Version:
+        result = self._rest_adapter.get(endpoint="version")
+        version = self._one(result, Version)
+        return version
