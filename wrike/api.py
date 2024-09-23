@@ -8,6 +8,8 @@ from wrike.exceptions import WrikeException
 from wrike.models import *
 from wrike.warnings import DataCappedWarning, GreaterThanOneWarning, ZeroWarning
 
+# TODO: Special syntax https://developers.wrike.com/special-syntax/
+
 
 class Wrike:
     def __init__(

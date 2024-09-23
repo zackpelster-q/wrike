@@ -168,69 +168,21 @@ class Method:
             )
 
 
-class Version(Method):
-    major: str
-    minor: str
+# TODO: Contacts https://developers.wrike.com/api/v4/contacts/
 
-    def __init__(
-        self,
-        major: int,
-        minor: int,
-        **kwargs,
-    ):
-        """API version info
+# TODO: Users https://developers.wrike.com/api/v4/users/
 
-        Args:
-            major (int): Major version number
-            minor (int): Minor version number
-        """
-        super().__init__("version", **kwargs)
-        self.major = major
-        self.minor = minor
-        self.__dict__.update(kwargs)
+# TODO: Groups https://developers.wrike.com/api/v4/groups/
 
+# TODO: Invitations https://developers.wrike.com/api/v4/invitations/
 
-class Comment(Method):
-    id: str
-    author_id: str
-    text: str
-    updated_date: datetime
-    created_date: datetime
-    task_id: Optional[str]
-    folder_id: Optional[str]
+# TODO: Account https://developers.wrike.com/api/v4/account/
 
-    def __init__(
-        self,
-        id: str,
-        author_id: str,
-        text: str,
-        updated_date: datetime,
-        created_date: datetime,
-        task_id: Optional[str],
-        folder_id: Optional[str],
-        **kwargs,
-    ) -> None:
-        """Comments
+# TODO: Workflows https://developers.wrike.com/api/v4/workflows/
 
-        Args:
-            id (str): Comment ID
-            author_id (str): Author ID
-            text (str): Comment text
-            updated_date (datetime): Deprecated because this field gets created date instead of updated date.
-                Please use the createdDate field instead.
-            created_date (datetime): Created date
-            task_id (Optional[str]): ID of related task. Only one of taskId/folderId fields is present
-            folder_id (Optional[str]): ID of related folder. Only one of taskId/folderId fields is present
-        """
-        super().__init__("comments", **kwargs)
-        self.id = id
-        self.author_id = author_id
-        self.text = text
-        self.updated_date = updated_date
-        self.created_date = created_date
-        self.task_id = task_id
-        self.folder_id = folder_id
-        self.__dict__.update(kwargs)
+# TODO: Custom Fields https://developers.wrike.com/api/v4/custom-fields/
+
+# TODO: Folders & Projects https://developers.wrike.com/api/v4/folders-projects/
 
 
 class Task(Method):
@@ -265,6 +217,7 @@ class Task(Method):
         custom_status_id: str = "",
         **kwargs,
     ) -> None:
+        # TODO: Create Docstring https://developers.wrike.com/api/v4/tasks/
         super().__init__("tasks", **kwargs)
         self.id = id
         self.account_id = account_id
@@ -282,6 +235,50 @@ class Task(Method):
         self.__dict__.update(kwargs)
 
 
+class Comment(Method):
+    id: str
+    author_id: str
+    text: str
+    updated_date: datetime
+    created_date: datetime
+    task_id: Optional[str]
+    folder_id: Optional[str]
+
+    def __init__(
+        self,
+        id: str,
+        author_id: str,
+        text: str,
+        updated_date: datetime,
+        created_date: datetime,
+        task_id: Optional[str],
+        folder_id: Optional[str],
+        **kwargs,
+    ) -> None:
+        """Comments
+        https://developers.wrike.com/api/v4/comments/
+
+        Args:
+            id (str): Comment ID
+            author_id (str): Author ID
+            text (str): Comment text
+            updated_date (datetime): Deprecated because this field gets created date instead of updated date.
+                Please use the createdDate field instead.
+            created_date (datetime): Created date
+            task_id (Optional[str]): ID of related task. Only one of taskId/folderId fields is present
+            folder_id (Optional[str]): ID of related folder. Only one of taskId/folderId fields is present
+        """
+        super().__init__("comments", **kwargs)
+        self.id = id
+        self.author_id = author_id
+        self.text = text
+        self.updated_date = updated_date
+        self.created_date = created_date
+        self.task_id = task_id
+        self.folder_id = folder_id
+        self.__dict__.update(kwargs)
+
+
 class Dependency(Method):
     def __init__(
         self,
@@ -291,7 +288,8 @@ class Dependency(Method):
         relation_type: str,
         lag_time: int,
         **kwargs,
-    ):
+    ) -> None:
+        # TODO: Create Docstring https://developers.wrike.com/api/v4/dependencies/
         super().__init__("version", **kwargs)
         self.id = id
         self.predecessor_id = predecessor_id
@@ -299,3 +297,78 @@ class Dependency(Method):
         self.relation_type = relation_type
         self.lag_time = lag_time
         self.__dict__.update(kwargs)
+
+
+# TODO: Timelogs https://developers.wrike.com/api/v4/timelogs/
+
+# TODO: Timelog categories https://developers.wrike.com/api/v4/timelog-categories/
+
+# TODO: Attachments https://developers.wrike.com/api/v4/attachments/
+
+
+class Version(Method):
+    major: str
+    minor: str
+
+    def __init__(
+        self,
+        major: int,
+        minor: int,
+        **kwargs,
+    ):
+        """API version info
+        https://developers.wrike.com/api/v4/version/
+
+        Args:
+            major (int): Major version number
+            minor (int): Minor version number
+        """
+        super().__init__("version", **kwargs)
+        self.major = major
+        self.minor = minor
+        self.__dict__.update(kwargs)
+
+
+# TODO: IDs https://developers.wrike.com/api/v4/ids/
+
+# TODO: Colors https://developers.wrike.com/api/v4/colors/
+
+# TODO: Spaces https://developers.wrike.com/api/v4/spaces/
+
+# TODO: Data Export https://developers.wrike.com/api/v4/data-export/
+
+# TODO: Audit Log https://developers.wrike.com/api/v4/audit-log/
+
+# TODO: Access Roles https://developers.wrike.com/api/v4/access-roles/
+
+# TODO: Async job https://developers.wrike.com/api/v4/async-job/
+
+# TODO: Approvals https://developers.wrike.com/api/v4/approvals/
+
+# TODO: Work Schedules https://developers.wrike.com/api/v4/work-schedules/
+
+# TODO: Copy Work Schedule https://developers.wrike.com/api/v4/copy-work-schedule/
+
+# TODO: Work Schedule exceptions https://developers.wrike.com/api/v4/work-schedule-exceptions/
+
+# TODO: User Schedule exceptions https://developers.wrike.com/api/v4/user-schedule-exceptions/
+
+# TODO: Bookings https://developers.wrike.com/api/v4/bookings/
+
+# TODO: Job Roles https://developers.wrike.com/api/v4/job-roles/
+
+# TODO: Placeholders https://developers.wrike.com/api/v4/placeholders/
+
+# TODO: Folder Blueprints https://developers.wrike.com/api/v4/folder-blueprints/
+
+# TODO: Task Blueprints https://developers.wrike.com/api/v4/task-blueprints/
+
+# TODO: EDiscovery https://developers.wrike.com/api/v4/ediscovery/
+
+# TODO: Hourly rates provision https://developers.wrike.com/api/v4/hourly-rates-provision/
+
+# TODO: Hourly rates https://developers.wrike.com/api/v4/hourly-rates/
+
+# TODO: Custom Item Types https://developers.wrike.com/api/v4/custom-item-types/
+
+# TODO: User Types https://developers.wrike.com/api/v4/user-types/

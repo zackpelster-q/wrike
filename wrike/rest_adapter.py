@@ -100,6 +100,7 @@ class RestAdapter:
                 data=data_out,
             )
         self._logger.error(msg=log_line)
+        # TODO: Errors https://developers.wrike.com/errors/
         raise WrikeException(f"{response.status_code}: {response.reason}")
 
     def get(self, endpoint: str, ep_params: Dict = None) -> Result:
