@@ -74,6 +74,11 @@ class Wrike:
         outcome = model(**result.data[0])
         return outcome
 
+    def get_me(self) -> Contact:
+        result = self._rest_adapter.get(endpoint="contacts?me")
+        contact = self._one(result, Contact)
+        return contact
+
     def get_version(self) -> Version:
         result = self._rest_adapter.get(endpoint="version")
         version = self._one(result, Version)

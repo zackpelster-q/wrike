@@ -4,7 +4,7 @@ from wrike.api import Wrike
 from wrike.models import Task, Result
 
 
-class TestWrike(TestCase):
+class TestTasks(TestCase):
     def setUp(self) -> None:
         self.wrike = Wrike(page_size=3)
         self.wrike._rest_adapter = MagicMock()

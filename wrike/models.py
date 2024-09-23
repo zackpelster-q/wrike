@@ -4,7 +4,7 @@ from requests.structures import CaseInsensitiveDict
 from typing import Dict, List, Optional, TypeVar
 import warnings
 
-from wrike.exceptions import KindException, WrikeException
+from wrike.exceptions import WrikeException
 
 Model = TypeVar("Model", covariant=True)
 
@@ -33,6 +33,11 @@ class Status(Enum):
     DEFERRED = "Deferred"
 
 
+class Role(Enum):
+    COLLABORATOR = "Collaborator"
+    USER = "User"
+
+
 class Dates:
     type: TypeEnum
     duration: Optional[int]
@@ -53,6 +58,31 @@ class Dates:
         self.start = start
         self.due = due
         self.work_on_weekends = work_on_weekends
+
+
+class Profile:
+    account_id: str
+    role: Role
+    external: bool
+    admin: bool
+    owner: bool
+    email: Optional[str]
+
+    def __init__(
+        self,
+        account_id: str,
+        role: Role,
+        external: bool,
+        admin: bool,
+        owner: bool,
+        email: Optional[str],
+    ) -> None:
+        self.account_id = account_id
+        self.role = role
+        self.external = external
+        self.admin = admin
+        self.owner = owner
+        self.email = email
 
 
 class Result:
@@ -168,7 +198,49 @@ class Method:
             )
 
 
-# TODO: Contacts https://developers.wrike.com/api/v4/contacts/
+class Contact(Method):
+    def __init__(
+        self,
+        id: str,
+        firstName: str,
+        lastName: str,
+        type: TypeEnum,
+        profiles: List[Profile],
+        avatarUrl: str,
+        timezone: str,
+        locale: str,
+        deleted: bool,
+        title: Optional[str],
+        companyName: Optional[str],
+        primaryEmail: Optional[str],
+        phone: Optional[str],
+        location: Optional[str],
+        me: Optional[bool],
+        memberIds: Optional[List[str]] = "",
+        myTeam: Optional[bool] = "",
+        **kwargs,
+    ) -> None:
+        # TODO: Contacts https://developers.wrike.com/api/v4/contacts/
+        super().__init__("contacts", **kwargs)
+        self.id = id
+        self.first_name = firstName
+        self.last_name = lastName
+        self.type = type
+        self.profiles = profiles
+        self.avatar_url = avatarUrl
+        self.timezone = timezone
+        self.locale = locale
+        self.deleted = deleted
+        self.member_ids = memberIds
+        self.title = title
+        self.company_name = companyName
+        self.primary_email = primaryEmail
+        self.phone = phone
+        self.location = location
+        self.my_team = myTeam
+        self.me = me
+        self.__dict__.update(kwargs)
+
 
 # TODO: Users https://developers.wrike.com/api/v4/users/
 
