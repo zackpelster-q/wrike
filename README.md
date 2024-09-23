@@ -5,16 +5,16 @@ Thank you to Pretzel for the great tutorial on creating a Python JSON REST API w
 Go to [Python JSON REST API wrapper library: a How-To in 15 simple steps](https://www.pretzellogix.net/2021/12/08/how-to-write-a-python3-sdk-library-module-for-a-json-rest-api/) to see Pretzel's tutorial and create your own wrapper library.
 
 ## Implementation Status
-| Other                     | Links                                                         | Added | Tested | Complete |
-|---------------------------|---------------------------------------------------------------|-------|--------|----------|
-| Permnent Access Token     | https://developers.wrike.com/oauth-20-authorization/          | [x]   | [ ]    | [ ]      |
-| OAuth 2.0 Authorization   | https://developers.wrike.com/oauth-20-authorization/          | [ ]   | [ ]    | [ ]      |
-| Webhooks                  | https://developers.wrike.com/webhooks/                        | [ ]   | [ ]    | [ ]      |
+| Other                     | Links                                                         | Added | Tested | Examples | Complete |
+|---------------------------|---------------------------------------------------------------|-------|--------|----------|----------|
+| Permnent Access Token     | https://developers.wrike.com/oauth-20-authorization/          | [x]   | [x]    | [x]      | [ ]      |
+| OAuth 2.0 Authorization   | https://developers.wrike.com/oauth-20-authorization/          | [ ]   | [ ]    | [ ]      | [ ]      |
+| Webhooks                  | https://developers.wrike.com/webhooks/                        | [ ]   | [ ]    | [ ]      | [ ]      |
 
 ### Method Implementation Status
 | Methods                   | Links                                                         | GET | POST | PUT | DELETE | Tested | Complete |
 |---------------------------|---------------------------------------------------------------|-----|------|-----|--------|--------|----------|
-| Contacts                  | https://developers.wrike.com/api/v4/contacts/                 | [ ] | [ ]  | [ ] | [ ]    | [ ]    | [ ]      |
+| Contacts                  | https://developers.wrike.com/api/v4/contacts/                 | [x] | [ ]  | [ ] | [ ]    | [ ]    | [ ]      |
 | Users                     | https://developers.wrike.com/api/v4/users/                    | [ ] | [ ]  | [ ] | [ ]    | [ ]    | [ ]      |
 | Groups                    | https://developers.wrike.com/api/v4/groups/                   | [ ] | [ ]  | [ ] | [ ]    | [ ]    | [ ]      |
 | Invitations               | https://developers.wrike.com/api/v4/invitations/              | [ ] | [ ]  | [ ] | [ ]    | [ ]    | [ ]      |
