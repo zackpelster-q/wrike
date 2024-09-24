@@ -105,10 +105,53 @@ class Wrike:
                 new_model_list.append(model)
         return new_model_list
 
+    def get_contacts(
+        self,
+        id: List[str] = None,
+        me: bool = None,
+        metadata: Dict = None,
+        deleted: bool = None,
+        custom_fields: List[Dict] = None,
+        fields: List[str] = None,
+        contacts_history: bool = None,
+        updated_date: Dict = None,
+    ) -> [Contact]:
+        if id:
+            if isinstance(id, list):
+                if len(id) > 100:
+                    raise ValueError(
+                        f"Max number of ids that can be passed through is 100, number of ids asked for is {len(id)}."
+                    )
+            else:
+                raise TypeError(
+                    f"Expected type for 'id' is a list of strings, {type(id)} was provided."
+                )
+        else:
+            if contacts_history:
+                raise ValueError(
+                    f"When 'contacts_history' is inputted the 'id' must be provided."
+                )
+
+        ed_params = {}
+        endpoint = "contacts"
+        self._add_param(ed_params, "fields", fields, List[str])
+        if not id or not contacts_history:
+            self._add_param(ed_params, "metadata", metadata, Dict)
+        if id:
+            endpoint += f"/{','.join(id)}"
+            if contacts_history:
+                endpoint += "/contacts_history"
+                self._add_param(ed_params, "updatedDate", updated_date, Dict)
+        else:
+            self._add_param(ed_params, "me", me, bool)
+            self._add_param(ed_params, "deleted", deleted, bool)
+            self._add_param(ed_params, "customFields", custom_fields, List[Dict])
+
+        result = self._rest_adapter.get(endpoint=endpoint, ed_params=ed_params)
+        return self._models(result, Contact)
+
     def get_me(self) -> Contact:
-        result = self._rest_adapter.get(endpoint="contacts?me")
-        contact = self._one(self._models(result, Contact))
-        return contact
+        return self._one(self.get_contacts(me=True))
 
     def _get_folders(
         self,
