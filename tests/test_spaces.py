@@ -117,11 +117,31 @@ class TestSpace(TestCase):
                         "defaultProjectWorkflowId": "test",
                         "defaultTaskWorkflowId": "test",
                     },
+                    {
+                        "id": "test",
+                        "title": "test1",
+                        "avatarUrl": "test",
+                        "accessType": "test",
+                        "archived": False,
+                        "guestRoleId": "test",
+                        "defaultProjectWorkflowId": "test",
+                        "defaultTaskWorkflowId": "test",
+                    },
+                    {
+                        "id": "test",
+                        "title": "test2",
+                        "avatarUrl": "test",
+                        "accessType": "test",
+                        "archived": False,
+                        "guestRoleId": "test",
+                        "defaultProjectWorkflowId": "test",
+                        "defaultTaskWorkflowId": "test",
+                    },
                 ],
             },
         )
-        space = self.wrike.get_space_and_filter("test")
-        self.assertIsInstance(space[0], Space)
+        space = self.wrike.get_space_and_filter_to_one("test")
+        self.assertIsInstance(space, Space)
 
     def test_get_space_and_filter_with_one_filter(self):
         self.wrike._rest_adapter.get.return_value = Result(

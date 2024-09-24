@@ -95,9 +95,7 @@ class Wrike:
             if key in optional_params or value is None:
                 new_param_dict.pop(key, None)
         if not new_param_dict:
-            raise ValueError(
-                f"At least one of the required parameters cannot be None.\n{new_param_dict}"
-            )
+            raise ValueError(f"At least one of the optional parameters cannot be None.")
         return new_param_dict
 
     def _filter(self, param_dict: Dict, model_list: List[Model]) -> List[Model]:
@@ -205,7 +203,7 @@ class Wrike:
         with_archived: Optional[bool] = None,
         user_is_member: Optional[bool] = None,
         fields: Optional[List[str]] = None,
-    ) -> Space:
+    ) -> List[Space]:
         optional_params = ["with_archived", "user_is_member", "fields"]
         param_dict = self._create_filter(
             param_dict=locals(), remove_params=optional_params
@@ -214,3 +212,30 @@ class Wrike:
             with_archived=with_archived, user_is_member=user_is_member, fields=fields
         )
         return self._filter(param_dict=param_dict, model_list=space_list)
+
+    def get_space_and_filter_to_one(
+        self,
+        title: str = None,
+        avatar_url: str = None,
+        access_type: AccessType = None,
+        guest_role_id: str = None,
+        default_project_workflow_id: str = None,
+        default_task_workflow_id: str = None,
+        description: str = None,
+        with_archived: Optional[bool] = None,
+        user_is_member: Optional[bool] = None,
+        fields: Optional[List[str]] = None,
+    ) -> Space:
+        output = self.get_space_and_filter(
+            title,
+            avatar_url,
+            access_type,
+            guest_role_id,
+            default_project_workflow_id,
+            default_task_workflow_id,
+            description,
+            with_archived,
+            user_is_member,
+            fields,
+        )
+        return self._one(output)
