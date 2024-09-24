@@ -173,3 +173,56 @@ class Wrike:
 
     def get_space_by_id(self, id: str, fields: List[str] = None) -> Space:
         return self._get_spaces(expect_one=True, id=id, fields=fields)
+
+    def get_space_by_title(
+        self,
+        title: str,
+        with_archived: bool = None,
+        user_is_member: bool = None,
+        fields: List[str] = None,
+    ) -> Space:
+        space_list = self._get_spaces(
+            with_archived=with_archived, user_is_member=user_is_member, fields=fields
+        )
+        new_space_list = []
+        for space in space_list:
+            if space.title == title:
+                new_space_list.append(space)
+        return new_space_list
+
+    def get_space_and_filter(
+        self,
+        title: str = None,
+        avatar_url: str = None,
+        access_type: AccessType = None,
+        guest_role_id: Optional[str] = None,
+        default_project_workflow_id: str = None,
+        default_task_workflow_id: str = None,
+        description: Optional[str] = None,
+        with_archived: bool = None,
+        user_is_member: bool = None,
+        fields: List[str] = None,
+    ) -> Space:
+        optional_params = (
+            "self",
+            "optional_params",
+            "with_archived",
+            "user_is_member",
+            "fields",
+        )
+        param_dict = locals().copy()
+        for key, value in locals().items():
+            if key in optional_params or value is None:
+                param_dict.pop(key, None)
+        if not param_dict:
+            raise ValueError(
+                f"At least one of the required parameters cannot be None.\n{param_dict}"
+            )
+        space_list = self._get_spaces(
+            with_archived=with_archived, user_is_member=user_is_member, fields=fields
+        )
+        new_space_list = []
+        for space in space_list:
+            if param_dict.items() <= space.__dict__.items():
+                new_space_list.append(space)
+        return new_space_list
