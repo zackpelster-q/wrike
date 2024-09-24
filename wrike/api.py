@@ -1,6 +1,6 @@
 import logging
 import math
-from typing import Callable, Iterator, List
+from typing import Callable, Iterator, List, Union
 import warnings
 
 from wrike.rest_adapter import RestAdapter
@@ -77,6 +77,17 @@ class Wrike:
         outcome = models[0]
         return outcome
 
+    def _add_param(
+        self, ed_params: Dict, key: any, value: any, expected_type: type
+    ) -> None:
+        if value:
+            if isinstance(value, expected_type):
+                ed_params[key] = value
+            else:
+                raise TypeError(
+                    f"Expected type for {key} is {value}, {type(value)} was provided"
+                )
+
     def get_me(self) -> Contact:
         result = self._rest_adapter.get(endpoint="contacts?me")
         contact = self._one(self._models(result, Contact))
@@ -112,12 +123,53 @@ class Wrike:
         version = self._one(self._models(result, Version))
         return version
 
-    def get_spaces(self) -> List[Space]:
-        result = self._rest_adapter.get(endpoint="spaces")
-        space_list = self._models(result, Space)
-        return space_list
+    def _get_spaces(
+        self,
+        expect_one: bool = False,
+        id: str = None,
+        with_archived: bool = None,
+        user_is_member: bool = None,
+        fields: List[str] = None,
+    ) -> Union[List[Space], Space]:
+        ed_params = {}
+        endpoint = "spaces"
+        if id:
+            if isinstance(id, str):
+                endpoint += f"/{id}"
+            else:
+                raise TypeError(f"Expected type for id is str, {type(id)} was provided")
+        else:
+            self._add_param(ed_params, "withArchived", with_archived, bool)
+            self._add_param(ed_params, "userIsMember", user_is_member, bool)
+        self._add_param(ed_params, "fields", fields, List[str])
+        result = self._rest_adapter.get(endpoint=endpoint, ed_params=ed_params)
+        output = self._models(result, Space)
+        if expect_one:
+            output = self._one(output)
+        return output
 
-    def get_space(self) -> Space:
-        result = self.get_spaces()
-        space = self._one(result)
-        return space
+    def get_spaces(
+        self,
+        with_archived: bool = None,
+        user_is_member: bool = None,
+        fields: List[str] = None,
+    ) -> Space:
+        return self._get_spaces(
+            with_archived=with_archived, user_is_member=user_is_member, fields=fields
+        )
+
+    def get_space(
+        self,
+        with_archived: bool = None,
+        user_is_member: bool = None,
+        fields: List[str] = None,
+    ) -> Space:
+        return self._get_spaces(
+            expect_one=True,
+            with_archived=with_archived,
+            user_is_member=user_is_member,
+            fields=fields,
+        )
+
+    def get_space_by_id(self, id: str, fields: List[str] = None) -> Space:
+        return self._get_spaces(expect_one=True, id=id, fields=fields)
