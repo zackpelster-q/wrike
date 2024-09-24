@@ -88,6 +88,25 @@ class Wrike:
                     f"Expected type for {key} is {value}, {type(value)} was provided"
                 )
 
+    def _create_filter(self, param_dict: Dict, remove_params: List = []) -> Dict:
+        optional_params = ["self", "optional_params"] + remove_params
+        new_param_dict = param_dict.copy()
+        for key, value in param_dict.items():
+            if key in optional_params or value is None:
+                new_param_dict.pop(key, None)
+        if not new_param_dict:
+            raise ValueError(
+                f"At least one of the required parameters cannot be None.\n{new_param_dict}"
+            )
+        return new_param_dict
+
+    def _filter(self, param_dict: Dict, model_list: List[Model]) -> List[Model]:
+        new_model_list = []
+        for model in model_list:
+            if param_dict.items() <= model.__dict__.items():
+                new_model_list.append(model)
+        return new_model_list
+
     def get_me(self) -> Contact:
         result = self._rest_adapter.get(endpoint="contacts?me")
         contact = self._one(self._models(result, Contact))
@@ -174,55 +193,24 @@ class Wrike:
     def get_space_by_id(self, id: str, fields: List[str] = None) -> Space:
         return self._get_spaces(expect_one=True, id=id, fields=fields)
 
-    def get_space_by_title(
-        self,
-        title: str,
-        with_archived: bool = None,
-        user_is_member: bool = None,
-        fields: List[str] = None,
-    ) -> Space:
-        space_list = self._get_spaces(
-            with_archived=with_archived, user_is_member=user_is_member, fields=fields
-        )
-        new_space_list = []
-        for space in space_list:
-            if space.title == title:
-                new_space_list.append(space)
-        return new_space_list
-
     def get_space_and_filter(
         self,
         title: str = None,
         avatar_url: str = None,
         access_type: AccessType = None,
-        guest_role_id: Optional[str] = None,
+        guest_role_id: str = None,
         default_project_workflow_id: str = None,
         default_task_workflow_id: str = None,
-        description: Optional[str] = None,
-        with_archived: bool = None,
-        user_is_member: bool = None,
-        fields: List[str] = None,
+        description: str = None,
+        with_archived: Optional[bool] = None,
+        user_is_member: Optional[bool] = None,
+        fields: Optional[List[str]] = None,
     ) -> Space:
-        optional_params = (
-            "self",
-            "optional_params",
-            "with_archived",
-            "user_is_member",
-            "fields",
+        optional_params = ["with_archived", "user_is_member", "fields"]
+        param_dict = self._create_filter(
+            param_dict=locals(), remove_params=optional_params
         )
-        param_dict = locals().copy()
-        for key, value in locals().items():
-            if key in optional_params or value is None:
-                param_dict.pop(key, None)
-        if not param_dict:
-            raise ValueError(
-                f"At least one of the required parameters cannot be None.\n{param_dict}"
-            )
         space_list = self._get_spaces(
             with_archived=with_archived, user_is_member=user_is_member, fields=fields
         )
-        new_space_list = []
-        for space in space_list:
-            if param_dict.items() <= space.__dict__.items():
-                new_space_list.append(space)
-        return new_space_list
+        return self._filter(param_dict=param_dict, model_list=space_list)
