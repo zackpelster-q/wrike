@@ -52,36 +52,39 @@ class Wrike:
                     last_page = 0
                     break
 
-    def _one(self, result: Result, model: Callable[..., Model]) -> Model:
-        if len(result.data) > 1:
+    def _models(self, result: Result, model: Callable[..., Model]) -> [Model]:
+        model_list = [model(**datum) for datum in result.data]
+        return model_list
+
+    def _one(self, models: [Callable[..., Model]]) -> Model:
+        if len(models) > 1:
             warnings.warn(
                 f"""More than 1 data value received from the HTTP response, 
                 only 1 value expected. Narrow down your search criteria to 
                 reduce the returned data values to 1 or use the related 
-                function that returns a list. {result.data}""",
+                function that returns a list.""",
                 GreaterThanOneWarning,
             )
-        elif len(result.data) == 0:
+        elif len(models) == 0:
             warnings.warn(
                 f"""No data values received from the HTTP response, only 1 
                 value expected. Check your search criteria for erroes or 
                 expand your search criteria to reduce the returned data 
-                values to 1 or use the related function that returns a list. 
-                {result.data}""",
+                values to 1 or use the related function that returns a list.""",
                 ZeroWarning,
             )
             return None
-        outcome = model(**result.data[0])
+        outcome = models[0]
         return outcome
 
     def get_me(self) -> Contact:
         result = self._rest_adapter.get(endpoint="contacts?me")
-        contact = self._one(result, Contact)
+        contact = self._one(self._models(result, Contact))
         return contact
 
     def get_tasks(self) -> List[Task]:
         result = self._rest_adapter.get(endpoint="tasks")
-        task_list = [Task(**datum) for datum in result.data]
+        task_list = self._models(result, Task)
         if len(task_list) == 1000:
             warnings.warn(
                 f"""Your data may be incomplete! Max of 1000 items per page was 
@@ -92,8 +95,8 @@ class Wrike:
         return task_list
 
     def get_task(self) -> Task:
-        result = self._rest_adapter.get(endpoint="tasks")
-        task = self._one(result, Task)
+        result = self.get_tasks()
+        task = self._one(result)
         return task
 
     def get_tasks_paged(self, max_amt: int = 1000) -> Iterator[Task]:
@@ -101,10 +104,10 @@ class Wrike:
 
     def get_comments(self) -> List[Comment]:
         result = self._rest_adapter.get(endpoint="commments")
-        comment_list = [Comment(**datum) for datum in result.data]
+        comment_list = self._models(result, Comment)
         return comment_list
 
     def get_version(self) -> Version:
         result = self._rest_adapter.get(endpoint="version")
-        version = self._one(result, Version)
+        version = self._one(self._models(result, Version))
         return version
