@@ -110,6 +110,203 @@ class Wrike:
         contact = self._one(self._models(result, Contact))
         return contact
 
+    def _get_folders(
+        self,
+        expect_one: bool = False,
+        id: Union[str, List[str]] = None,
+        permalink: str = None,
+        descendants: bool = None,
+        metadata: Dict = None,
+        custom_fields: List[Dict] = None,
+        update_date: Dict = None,
+        with_invitations: bool = None,
+        project: bool = None,
+        deleted: bool = None,
+        contract_types: List[str] = None,
+        plain_text_custom_fields: bool = None,
+        custom_item_types: List[str] = None,
+        fields: List[str] = None,
+    ) -> Union[List[Folder], Folder]:
+        ed_params = {}
+        endpoint = "folders"
+        if id:
+            if isinstance(id, str):
+                id = [id]
+
+            if isinstance(id, list):
+                if len(id) > 100:
+                    raise ValueError(
+                        f"Max number of ids that can be passed through is 100, number of ids asked for is {len(id)}"
+                    )
+                endpoint += f"/{','.join(id)}"
+            else:
+                raise TypeError(f"Expected type for id is str, {type(id)} was provided")
+            # TODO: Add folders_history
+        else:
+            self._add_param(ed_params, "permalink", permalink, str)
+            self._add_param(ed_params, "descendants", descendants, bool)
+            self._add_param(ed_params, "metadata", metadata, Dict)
+            self._add_param(ed_params, "customFields", custom_fields, List[Dict])
+            self._add_param(ed_params, "updateDate", update_date, Dict)
+            self._add_param(ed_params, "project", project, bool)
+            self._add_param(ed_params, "deleted", deleted, bool)
+            self._add_param(ed_params, "contractTypes", contract_types, List[str])
+            self._add_param(ed_params, "customItemTypes", custom_item_types, List[str])
+        self._add_param(ed_params, "withInvitations", with_invitations, bool)
+        self._add_param(
+            ed_params, "plainTextCustomFields", plain_text_custom_fields, bool
+        )
+        self._add_param(ed_params, "fields", fields, List[str])
+        result = self._rest_adapter.get(endpoint=endpoint, ed_params=ed_params)
+        output = self._models(result, Folder)
+        if expect_one:
+            output = self._one(output)
+        return output
+
+    def get_folders(
+        self,
+        permalink: str = None,
+        descendants: bool = None,
+        metadata: Dict = None,
+        custom_fields: List[Dict] = None,
+        update_date: Dict = None,
+        with_invitations: bool = None,
+        project: bool = None,
+        deleted: bool = None,
+        contract_types: List[str] = None,
+        plain_text_custom_fields: bool = None,
+        custom_item_types: List[str] = None,
+        fields: List[str] = None,
+    ) -> List[Folder]:
+        return self._get_folders(
+            permalink=permalink,
+            descendants=descendants,
+            metadata=metadata,
+            custom_fields=custom_fields,
+            update_date=update_date,
+            with_invitations=with_invitations,
+            project=project,
+            deleted=deleted,
+            contract_types=contract_types,
+            plain_text_custom_fields=plain_text_custom_fields,
+            custom_item_types=custom_item_types,
+            fields=fields,
+        )
+
+    def get_folder(
+        self,
+        permalink: str = None,
+        descendants: bool = None,
+        metadata: Dict = None,
+        custom_fields: List[Dict] = None,
+        update_date: Dict = None,
+        with_invitations: bool = None,
+        project: bool = None,
+        deleted: bool = None,
+        contract_types: List[str] = None,
+        plain_text_custom_fields: bool = None,
+        custom_item_types: List[str] = None,
+        fields: List[str] = None,
+    ) -> Folder:
+        return self._get_folders(
+            expect_one=True,
+            permalink=permalink,
+            descendants=descendants,
+            metadata=metadata,
+            custom_fields=custom_fields,
+            update_date=update_date,
+            with_invitations=with_invitations,
+            project=project,
+            deleted=deleted,
+            contract_types=contract_types,
+            plain_text_custom_fields=plain_text_custom_fields,
+            custom_item_types=custom_item_types,
+            fields=fields,
+        )
+
+    def get_folder_by_ids(
+        self,
+        id: List[str],
+        with_invitations: bool = None,
+        plain_text_custom_fields: bool = None,
+        fields: List[str] = None,
+    ) -> List[Folder]:
+        return self._get_folders(
+            expect_one=False,
+            id=id,
+            with_invitations=with_invitations,
+            plain_text_custom_fields=plain_text_custom_fields,
+            fields=fields,
+        )
+
+    def get_folder_by_id(
+        self,
+        id: str,
+        with_invitations: bool = None,
+        plain_text_custom_fields: bool = None,
+        fields: List[str] = None,
+    ) -> Folder:
+        return self._get_folders(
+            expect_one=True,
+            id=id,
+            with_invitations=with_invitations,
+            plain_text_custom_fields=plain_text_custom_fields,
+            fields=fields,
+        )
+
+    def get_folder_and_filter(
+        self,
+        title: str = None,
+        avatar_url: str = None,
+        access_type: AccessType = None,
+        guest_role_id: str = None,
+        default_project_workflow_id: str = None,
+        default_task_workflow_id: str = None,
+        description: str = None,
+        with_archived: Optional[bool] = None,
+        user_is_member: Optional[bool] = None,
+        fields: Optional[List[str]] = None,
+    ) -> List[Folder]:
+        return
+
+    #     optional_params = ["with_archived", "user_is_member", "fields"]
+    #     param_dict = self._create_filter(
+    #         param_dict=locals(), remove_params=optional_params
+    #     )
+    #     folder_list = self._get_folders(
+    #         with_archived=with_archived, user_is_member=user_is_member, fields=fields
+    #     )
+    #     return self._filter(param_dict=param_dict, model_list=folder_list)
+
+    def get_folder_and_filter_to_one(
+        self,
+        title: str = None,
+        avatar_url: str = None,
+        access_type: AccessType = None,
+        guest_role_id: str = None,
+        default_project_workflow_id: str = None,
+        default_task_workflow_id: str = None,
+        description: str = None,
+        with_archived: Optional[bool] = None,
+        user_is_member: Optional[bool] = None,
+        fields: Optional[List[str]] = None,
+    ) -> Folder:
+        return
+
+    #     output = self.get_folder_and_filter(
+    #         title,
+    #         avatar_url,
+    #         access_type,
+    #         guest_role_id,
+    #         default_project_workflow_id,
+    #         default_task_workflow_id,
+    #         description,
+    #         with_archived,
+    #         user_is_member,
+    #         fields,
+    #     )
+    #     return self._one(output)
+
     def get_tasks(self) -> List[Task]:
         result = self._rest_adapter.get(endpoint="tasks")
         task_list = self._models(result, Task)
@@ -170,7 +367,7 @@ class Wrike:
         with_archived: bool = None,
         user_is_member: bool = None,
         fields: List[str] = None,
-    ) -> Space:
+    ) -> List[Space]:
         return self._get_spaces(
             with_archived=with_archived, user_is_member=user_is_member, fields=fields
         )

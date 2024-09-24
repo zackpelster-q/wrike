@@ -5,6 +5,7 @@ from typing import Dict, List, Optional, TypeVar
 import warnings
 
 from wrike.exceptions import WrikeException
+from wrike.warnings import KindWarning
 
 Model = TypeVar("Model", covariant=True)
 
@@ -13,6 +14,11 @@ class AccessType(Enum):
     PERSONAL = "Personal"
     PRIVATE = "Private"
     PUBLIC = "Public"
+
+
+class ContractType(Enum):
+    BILLABLE = "Billable"
+    NON_BILLABLE = "NonBillable"
 
 
 class TypeEnum(Enum):
@@ -27,9 +33,16 @@ class Importance(Enum):
     NORMAL = "Normal"
 
 
-class Scope(Enum):
+class TaskScope(Enum):
     WS_TASK = "WsTask"
     RB_TASK = "RbTask"
+
+
+class Scope(Enum):
+    RB_FOLDER = "RbFolder"
+    RB_ROOT = "RbRoot"
+    WS_FOLDER = "WsFolder"
+    WS_ROOT = "WsRoot"
 
 
 class Status(Enum):
@@ -89,6 +102,37 @@ class Profile:
         self.admin = admin
         self.owner = owner
         self.email = email
+
+
+class Project:
+    author_id: str
+    owner_ids: List[str]
+    custom_status_id: str
+    created_date: datetime
+    contract_type: ContractType
+    start_date: Optional[datetime]
+    end_date: Optional[datetime]
+    completed_date: Optional[datetime]
+
+    def __init__(
+        self,
+        authorId: str,
+        ownerIds: List[str],
+        customStatusId: str,
+        createdDate: datetime,
+        contractType: ContractType,
+        startDate: Optional[datetime],
+        endDate: Optional[datetime],
+        completedDate: Optional[datetime],
+    ) -> None:
+        self.author_id = authorId
+        self.owner_ids = ownerIds
+        self.custom_status_id = customStatusId
+        self.created_date = createdDate
+        self.contract_type = contractType
+        self.start_date = startDate
+        self.end_date = endDate
+        self.completed_date = completedDate
 
 
 class Result:
@@ -260,7 +304,37 @@ class Contact(Method):
 
 # TODO: Custom Fields https://developers.wrike.com/api/v4/custom-fields/
 
-# TODO: Folders & Projects https://developers.wrike.com/api/v4/folders-projects/
+
+class Folder(Method):
+    id: str
+    title: str
+    child_ids: List[str]
+    scope: Scope
+    custom_column_ids: List[str]
+    space: bool
+    project: Optional[Project]
+
+    def __init__(
+        self,
+        id: str,
+        title: str,
+        childIds: List[str],
+        scope: Scope,
+        customColumnIds: List[str] = [],
+        space: bool = False,
+        project: Optional[Project] = [],
+        **kwargs,
+    ) -> None:
+        # TODO: Folders & Projects https://developers.wrike.com/api/v4/folders-projects/
+        super().__init__("tasks", **kwargs)
+        self.id = id
+        self.title = title
+        self.child_ids = childIds
+        self.scope = scope
+        self.custom_column_ids = customColumnIds
+        self.space = space
+        self.project = project
+        self.__dict__.update(kwargs)
 
 
 class Task(Method):
@@ -273,7 +347,7 @@ class Task(Method):
     updated_date: Optional[datetime]
     completed_date: Optional[datetime]
     dates: Dates
-    scope: Scope
+    scope: TaskScope
     custom_status_id: Optional[str]
     permalink: str
     priority: str
@@ -285,7 +359,7 @@ class Task(Method):
         status: Status,
         importance: Importance,
         dates: Dates,
-        scope: Scope,
+        scope: TaskScope,
         permalink: str,
         priority: str,
         account_id: str = "",
