@@ -9,6 +9,12 @@ from wrike.exceptions import WrikeException
 Model = TypeVar("Model", covariant=True)
 
 
+class AccessType(Enum):
+    PERSONAL = "Personal"
+    PRIVATE = "Private"
+    PUBLIC = "Public"
+
+
 class TypeEnum(Enum):
     BACKLOG = "Backlog"
     MILESTONE = "Milestone"
@@ -405,7 +411,43 @@ class Version(Method):
 
 # TODO: Colors https://developers.wrike.com/api/v4/colors/
 
-# TODO: Spaces https://developers.wrike.com/api/v4/spaces/
+
+class Space(Method):
+    id: str
+    title: str
+    avatar_url: str
+    access_type: AccessType
+    archived: bool
+    guest_role_id: Optional[str]
+    default_project_workflow_id: str
+    default_task_workflow_id: str
+    description: Optional[str]
+
+    def __init__(
+        self,
+        id: str,
+        title: str,
+        avatarUrl: str,
+        accessType: AccessType,
+        archived: bool,
+        guestRoleId: Optional[str],
+        defaultProjectWorkflowId: str,
+        defaultTaskWorkflowId: str,
+        description: Optional[str] = "",
+        **kwargs,
+    ) -> None:
+        # TODO: Spaces https://developers.wrike.com/api/v4/spaces/self.id = id
+        super().__init__("spaces", **kwargs)
+        self.title = title
+        self.avatar_url = avatarUrl
+        self.access_type = accessType
+        self.archived = archived
+        self.guest_role_id = guestRoleId
+        self.default_project_workflow_id = defaultProjectWorkflowId
+        self.default_task_workflow_id = defaultTaskWorkflowId
+        self.description = description
+        self.__dict__.update(kwargs)
+
 
 # TODO: Data Export https://developers.wrike.com/api/v4/data-export/
 

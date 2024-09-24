@@ -52,7 +52,7 @@ class Wrike:
                     last_page = 0
                     break
 
-    def _models(self, result: Result, model: Callable[..., Model]) -> [Model]:
+    def _models(self, result: Result, model: Callable[..., Model]) -> List[Model]:
         model_list = [model(**datum) for datum in result.data]
         return model_list
 
@@ -111,3 +111,13 @@ class Wrike:
         result = self._rest_adapter.get(endpoint="version")
         version = self._one(self._models(result, Version))
         return version
+
+    def get_spaces(self) -> List[Space]:
+        result = self._rest_adapter.get(endpoint="spaces")
+        space_list = self._models(result, Space)
+        return space_list
+
+    def get_space(self) -> Space:
+        result = self.get_spaces()
+        space = self._one(result)
+        return space

@@ -32,7 +32,7 @@ to see Pretzel's tutorial and create your own wrapper library.
 | Version                   | https://developers.wrike.com/api/v4/version/                  | :heavy_check_mark: |      |     |        |        |          |
 | IDs                       | https://developers.wrike.com/api/v4/ids/                      |                    |      |     |        |        |          |
 | Colors                    | https://developers.wrike.com/api/v4/colors/                   |                    |      |     |        |        |          |
-| Spaces                    | https://developers.wrike.com/api/v4/spaces/                   |                    |      |     |        |        |          |
+| Spaces                    | https://developers.wrike.com/api/v4/spaces/                   | :heavy_check_mark: |      |     |        |        |          |
 | Data Export               | https://developers.wrike.com/api/v4/data-export/              |                    |      |     |        |        |          |
 | Audit Log                 | https://developers.wrike.com/api/v4/audit-log/                |                    |      |     |        |        |          |
 | Access Roles              | https://developers.wrike.com/api/v4/access-roles/             |                    |      |     |        |        |          |
