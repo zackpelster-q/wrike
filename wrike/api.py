@@ -1,6 +1,6 @@
 import logging
 import math
-from typing import Callable, Iterator, List, Union
+from typing import Callable, Iterator, List, Union, Any
 import warnings
 
 from wrike.rest_adapter import RestAdapter
@@ -78,7 +78,7 @@ class Wrike:
         return outcome
 
     def _add_param(
-        self, ed_params: Dict, key: any, value: any, expected_type: type
+        self, ed_params: Dict, key: Any, value: Any, expected_type: type
     ) -> None:
         if value:
             if isinstance(value, expected_type):
