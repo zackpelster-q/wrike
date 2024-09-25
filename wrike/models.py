@@ -252,25 +252,65 @@ class Contact(Method):
     def __init__(
         self,
         id: str,
-        firstName: str,
-        lastName: str,
-        type: TypeEnum,
-        profiles: List[Profile],
-        avatarUrl: str,
-        timezone: str,
-        locale: str,
-        deleted: bool,
-        title: Optional[str],
-        companyName: Optional[str],
-        primaryEmail: Optional[str],
-        phone: Optional[str],
-        location: Optional[str],
-        me: Optional[bool],
-        memberIds: Optional[List[str]] = "",
-        myTeam: Optional[bool] = "",
+        firstName: str = None,
+        lastName: str = None,
+        type: str = None,
+        profiles: List[Dict] = None,
+        avatarUrl: str = None,
+        timezone: str = None,
+        locale: str = None,
+        deleted: bool = None,
+        me: bool = None,
+        memberIds: List[str] = None,
+        metadata: List[Dict] = None,
+        myTeam: bool = None,
+        title: str = None,
+        companyName: str = None,
+        phone: str = None,
+        location: str = None,
+        workScheduleId: str = None,
+        currentBillRate: Dict = None,
+        currentCostRate: Dict = None,
+        jobRoleId: str = None,
+        primaryEmail: str = None,
+        customFields: List[Dict] = None,
+        billRateHistory: List[Dict] = None,
+        costRateHistory: List[Dict] = None,
         **kwargs,
     ) -> None:
-        # TODO: Contacts https://developers.wrike.com/api/v4/contacts/
+        """Store information of contacts consisting of uses and user groups in the current account
+        https://developers.wrike.com/api/v4/contacts/
+
+        Args:
+            id (str): Contact ID
+            firstName (str, optional): First name. Defaults to None.
+            lastName (str, optional): Last name. Defaults to None.
+            type (str, optional): Type of the user. Defaults to None.
+            profiles (List[Dict], optional): List of user profiles in accounts accessible for requesting user.
+                Defaults to None.
+            avatarUrl (str, optional): Avatar URL. Defaults to None.
+            timezone (str, optional): Timezone Id, e.g 'America/New_York'. Defaults to None.
+            locale (str, optional): Locale. Defaults to None.
+            deleted (bool, optional): True if user is deleted, false otherwise. Defaults to None.
+            me (bool, optional): Field is present and set to true only for requesting user. Defaults to None.
+            memberIds (List[str], optional)): List of group members contact IDs (field is present only for groups).
+                Defaults to None.
+            metadata (List[Dict], optional): List of contact metadata entries. Requesting user has read/write
+                access to his own metadata, other entries are read-only. Defaults to None.
+            myTeam (bool, optional): Field is present and set to true for My Team (default) group. Defaults to None.
+            title (str, optional): User Title. Defaults to None.
+            companyName (str, optional): User Company Name. Defaults to None.
+            phone (str, optional): User phone. Defaults to None.
+            location (str, optional): User location. Defaults to None.
+            workScheduleId (str, optional): Id of work schedule assigned to user or default one. Defaults to None.
+            currentBillRate (Dict, optional): Current bill rate value. Defaults to None.
+            currentCostRate (Dict, optional): Current cost rate value. Defaults to None.
+            jobRoleId (str, optional): Job Role Id. Defaults to None.
+            primaryEmail (str, optional): Primary Email. Defaults to None.
+            customFields (List[Dict], optional): Custom fields. Defaults to None.
+            billRateHistory (List[Dict], optional): Bill rate change history. Defaults to None.
+            costRateHistory (List[Dict], optional): Cost rate change history. Defaults to None.
+        """
         super().__init__("contacts", **kwargs)
         self.id = id
         self.first_name = firstName
@@ -281,14 +321,22 @@ class Contact(Method):
         self.timezone = timezone
         self.locale = locale
         self.deleted = deleted
+        self.me = me
         self.member_ids = memberIds
+        self.metadata = metadata
+        self.my_team = myTeam
         self.title = title
         self.company_name = companyName
-        self.primary_email = primaryEmail
         self.phone = phone
         self.location = location
-        self.my_team = myTeam
-        self.me = me
+        self.work_schedule_id = workScheduleId
+        self.current_bill_rate = currentBillRate
+        self.current_cost_rate = currentCostRate
+        self.job_role_id = jobRoleId
+        self.primary_email = primaryEmail
+        self.custom_fields = customFields
+        self.bill_rate_history = billRateHistory
+        self.cost_rate_history = costRateHistory
         self.__dict__.update(kwargs)
 
 
